@@ -12,14 +12,22 @@ const initialFormData = {
   category: '',
   avaible: false
 }
+const api_server = 'http://localhost:3000/img/'
 function App() {
 
   const [formData, setFormData] = useState(initialFormData)
-  const [animeList, setAnimeList] = useState(animes)
+  const [anime, setAnime] = useState({})
 
+  function fetchData(url = 'http://localhost:3000/posts') {
+    fetch(url)
+      .then(resp => resp.json())
+      .then(data => {
+        console.log(data);
+        setAnime(data)
 
-
-
+      })
+  }
+  useEffect(fetchData, [])
 
   function handleTrashAnimeClick(e) {
     console.log(e.target);
@@ -147,18 +155,21 @@ function App() {
           </form>
         </div>
         <div className="container bg-warning">
-          <ul className="list-group mt-4">
-            {animeList.map((anime, index) => (< li key={index} className="list-group-item d-flex justify-content-between" >
-              <div className="container">
-                <p>{anime.name}</p>
-                <img src={anime.image} alt={anime.name} />
-                <p>{anime.content}</p>
-                <p>{anime.category}</p>
-                <p>{anime.available}</p>
+          <div className='row row-cols-1 row-cols-ms-2 row-cols-lg-3 g-3'>
+            {anime.data ? anime.data.map((character, index) => (
+              <div className='col' key={index}>
+                <div className="card">
+                  <p>{character.name}</p>
+                  <img src={api_server + character.image} alt={character.name} />
+                  <p>{character.content}</p>
+                  <p>{character.category}</p>
+                  <p>{character.available}</p>
+                </div>
               </div>
-              <button onClick={handleTrashAnimeClick} data-index={index}><i className="bi bi-trash-fill"></i></button>
-            </li>))}
-          </ul>
+            )) :
+              <p>No result yet</p>
+            }
+          </div>
         </div >
       </main >
       <AppFooter />
