@@ -159,11 +159,11 @@ function App() {
             {anime.data ? anime.data.map((character, index) => (
               <div className='col' key={index}>
                 <div className="card">
-                  <p>{character.name}</p>
-                  <img src={api_server + character.image} alt={character.name} />
+                  <p>{character.title}</p>
+                  <p>{character.slug}</p>
                   <p>{character.content}</p>
-                  <p>{character.category}</p>
-                  <p>{character.available}</p>
+                  <img src={api_server + character.image} alt={character.name} />
+                  <p>{character.tags}</p>
                 </div>
               </div>
             )) :
