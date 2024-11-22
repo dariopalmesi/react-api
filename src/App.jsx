@@ -71,7 +71,7 @@ function App() {
 
 
   function handleTrashpostClick(slug) {
-    console.log('Deleting post with slug:', slug);
+    console.log('Deleting post with slug:', post);
 
     fetch(`http://localhost:3000/posts/${slug}`, {
       method: 'DELETE',
@@ -79,7 +79,7 @@ function App() {
       .then(res => res.json())
       .then((data) => {
         console.log('Post deleted', data);
-        const newPosts = post.filter(post => post.slug != slug)
+        const newPosts = post.filter(character => character.slug != slug)
         console.log(newPosts);
         setPost(newPosts)
         fetchData()
@@ -218,7 +218,7 @@ function App() {
                   <p>{character.content}</p>
                   <img src={api_server + character.image} alt={character.name} />
                   <p>{character.tags}</p>
-                  <button type='button' data-slug={post.slug} onClick={() => handleTrashpostClick(post.slug)}>Trash</button>
+                  <button type='button' data-slug={character.slug} onClick={() => handleTrashpostClick(character.slug)}>Trash</button>
                 </div>
               </div>
             )) :
