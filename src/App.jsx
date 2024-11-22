@@ -17,7 +17,6 @@ const api_server = 'http://localhost:3000/img/'
 function App() {
 
   const [formData, setFormData] = useState(initialFormData)
-  // const [animeList, setAnimeList] = useState(animes)
   const [post, setPost] = useState({})
 
   function fetchData(url = 'http://localhost:3000/posts') {
@@ -69,27 +68,27 @@ function App() {
 
 
 
-  function handleTrashpostClick(e) {
-    console.log(e.target);
+  function handleTrashpostClick() {
 
-    const postTrashIndex = Number(e.target.getAttribute('data-index'));
-    console.log(post, postTrashIndex);
-    const newPosts = post.filter((post, index) => index != postTrashIndex)
+    fetch('http://localhost:3000/posts/slug', {
+      method: 'DELETE',
+      headers: {
+        'Content-type': 'application/json'
+      },
+    })
+      .then(res => res.json())
+      .then((data) => {
+        console.log('Post deleted', data);
+        fetchData()
+      })
+
+
+    const newPosts = post.filter(post => post.slug != slug)
     console.log(newPosts);
     setPost(newPosts)
   }
 
-  // function handleFormSubmit(e) {
-  //   e.preventDefault()
-  //   console.log('Form sent', formData);
-  //   setAnimeList([
-  //     {
-  //       id: Date.now(),
-  //       ...formData,
-  //     },
-  //     ...animeList
-  //   ])
-  // }
+
 
   function handleFormField(e) {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
@@ -218,6 +217,7 @@ function App() {
                   <p>{character.content}</p>
                   <img src={api_server + character.image} alt={character.name} />
                   <p>{character.tags}</p>
+                  <button type='button' onClick={handleTrashpostClick}>Trash</button>
                 </div>
               </div>
             )) :
