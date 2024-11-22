@@ -6,50 +6,90 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 const initialFormData = {
-  name: '',
-  image: '',
+  title: '',
+  slug: '',
   content: '',
-  category: '',
-  avaible: false
+  image: '',
+  tags: [],
+  avaible: ''
 }
 const api_server = 'http://localhost:3000/img/'
 function App() {
 
   const [formData, setFormData] = useState(initialFormData)
-  const [anime, setAnime] = useState({})
+  // const [animeList, setAnimeList] = useState(animes)
+  const [post, setPost] = useState({})
 
   function fetchData(url = 'http://localhost:3000/posts') {
     fetch(url)
       .then(resp => resp.json())
       .then(data => {
         console.log(data);
-        setAnime(data)
+        setPost(data)
 
       })
   }
   useEffect(fetchData, [])
 
-  function handleTrashAnimeClick(e) {
-    console.log(e.target);
-
-    const animeTrashIndex = Number(e.target.getAttribute('data-index'));
-    console.log(anime, animeTrashIndex);
-    const newAnimes = anime.filter((anime, index) => index != animeTrashIndex)
-    console.log(newAnimes);
-    setAnime(newAnimes)
-  }
-
-  function handleFormSubmit(e) {
+  function addPost(e) {
     e.preventDefault()
     console.log('Form sent', formData);
-    setAnimeList([
-      {
-        id: Date.now(),
-        ...formData,
+
+
+    const newPost = {
+      title: formData.title,
+      slug: formData.slug,
+      content: formData.content,
+      image: formData.image,
+      tags: formData.tags,
+      avaible: formData.avaible
+    }
+
+
+    fetch('http://localhost:3000/posts', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json'
       },
-      ...animeList
-    ])
+      body: JSON.stringify(newPost),
+    })
+      .then((res) => res.json())
+      .then(data => {
+        console.log('Post added', data);
+
+
+        setFormData(initialFormData)
+
+        fetchData()
+
+
+
+      })
   }
+
+
+
+  function handleTrashpostClick(e) {
+    console.log(e.target);
+
+    const postTrashIndex = Number(e.target.getAttribute('data-index'));
+    console.log(post, postTrashIndex);
+    const newPosts = post.filter((post, index) => index != postTrashIndex)
+    console.log(newPosts);
+    setPost(newPosts)
+  }
+
+  // function handleFormSubmit(e) {
+  //   e.preventDefault()
+  //   console.log('Form sent', formData);
+  //   setAnimeList([
+  //     {
+  //       id: Date.now(),
+  //       ...formData,
+  //     },
+  //     ...animeList
+  //   ])
+  // }
 
   function handleFormField(e) {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
@@ -64,7 +104,7 @@ function App() {
       <main className="bg-black">
         <div className="p-5 mb-4 bg-light rounded-3">
           <div className="container-fluid py-5">
-            <h1 className="display-5 fw-bold">Anime Blog</h1>
+            <h1 className="display-5 fw-bold">Blog Torte</h1>
             <p className="col-md-8 fs-4">
               Using a series of utilities, you can create this jumbotron, just
               like the one in previous versions of Bootstrap. Check out the
@@ -83,21 +123,35 @@ function App() {
             </button>
           </div>
           <p>Description to anime</p>
-          <form onSubmit={handleFormSubmit}>
+          <form onSubmit={addPost}>
             <div className="mb-3">
-              <label htmlFor="name" className="form-label">Name</label>
+              <label htmlFor="title" className="form-label">Title</label>
               <input
                 type="text"
                 className="form-control"
-                name="name"
-                id="name"
-                aria-describedby="namehelper"
-                placeholder="Anime"
+                name="title"
+                id="title"
+                aria-describedby="titlehelper"
+                placeholder="Title"
                 required
-                value={formData.name}
+                value={formData.title}
                 onChange={handleFormField}
               />
-              <small id="namehelper" className="form-text text-muted">Type Name of Anime</small>
+              <small id="namehelper" className="form-text text-muted">Type Title of Post</small>
+            </div>
+            <div className="mb-3">
+              <label htmlFor="slug" className="form-label">Slug</label>
+              <input
+                type="text"
+                className="form-control"
+                name="slug"
+                id="slug"
+                aria-describedby="slughelper"
+                placeholder="Slug"
+                value={formData.slug}
+                onChange={handleFormField}
+              />
+              <small id="slughelper" className="form-text text-muted">Type Slug of Post</small>
             </div>
             <div className="mb-3">
               <label htmlFor="image" className="form-label">Image</label>
@@ -107,11 +161,11 @@ function App() {
                 name="image"
                 id="image"
                 aria-describedby="imagehelper"
-                placeholder="/images/1.jpg"
+                placeholder="ciambellone.jpeg"
                 value={formData.image}
                 onChange={handleFormField}
               />
-              <small id="imagehelper" className="form-text text-muted">Type image path of Anime</small>
+              <small id="imagehelper" className="form-text text-muted">Type image path of Torta</small>
             </div>
             <div className="mb-3">
               <label htmlFor="content" className="form-label">Content</label>
@@ -128,18 +182,18 @@ function App() {
               <small id="contenthelper" className="form-text text-muted">Type Content Anime</small>
             </div>
             <div className="mb-3">
-              <label htmlFor="" className="form-label">Anime</label>
+              <label htmlFor="stags" className="form-label">Torte</label>
               <select
                 className="form-select form-select-lg"
-                name="category"
-                id="category"
-                value={formData.category}
+                name="tags"
+                id="tags"
+                value={formData.tags}
                 onChange={handleFormField}
               >
-                <option>Select a category</option>
-                <option defaultValue="">Shonen</option>
-                <option defaultValue="">Isekai</option>
-                <option defaultValue="">Seinen</option>
+                <option>Select a tags</option>
+                <option defaultValue="">Antipasti</option>
+                <option defaultValue="">Ricette vegetariane</option>
+                <option defaultValue="">Ricette al forno</option>
               </select>
             </div>
             <div className="form-check">
@@ -156,7 +210,7 @@ function App() {
         </div>
         <div className="container bg-warning">
           <div className='row row-cols-1 row-cols-ms-2 row-cols-lg-3 g-3'>
-            {anime.data ? anime.data.map((character, index) => (
+            {post.data ? post.data.map((character, index) => (
               <div className='col' key={index}>
                 <div className="card">
                   <p>{character.title}</p>
