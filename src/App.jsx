@@ -10,23 +10,24 @@ const initialFormData = {
   slug: '',
   content: '',
   image: '',
-  tags: [],
+  tags: '',
   avaible: ''
 }
 const api_server = 'http://localhost:3000/img/'
 function App() {
 
   const [formData, setFormData] = useState(initialFormData)
-  const [post, setPost] = useState({})
-  console.log(post);
+  const [characters, setCharacters] = useState({})
+
+
 
 
   function fetchData(url = 'http://localhost:3000/posts') {
     fetch(url)
       .then(resp => resp.json())
       .then(data => {
-        console.log(data);
-        setPost(data)
+        // console.log(data);
+        setCharacters(data)
 
       })
   }
@@ -71,7 +72,7 @@ function App() {
 
 
   function handleTrashpostClick(slug) {
-    console.log('Deleting post with slug:', post);
+    console.log('Deleting post with slug:', characters);
 
     fetch(`http://localhost:3000/posts/${slug}`, {
       method: 'DELETE',
@@ -79,10 +80,10 @@ function App() {
       .then(res => res.json())
       .then((data) => {
         console.log('Post deleted', data);
-        const newPosts = post.filter(character => character.slug != slug)
+        const newPosts = characters.data.filter(character => character.slug != slug)
         console.log(newPosts);
-        setPost(newPosts)
-        fetchData()
+        setCharacters({ ...characters, data: newPosts });
+
       })
 
 
@@ -102,13 +103,13 @@ function App() {
     <>
       <AppHeader />
       <main className="bg-black">
-        <div className="p-5 mb-4 bg-light rounded-3">
+        <div className="p-5 mb-4 bg-info-subtle rounded-3">
           <div className="container-fluid py-5">
-            <h1 className="display-5 fw-bold">Blog Torte</h1>
+            <h1 className="display-5 fw-bold">Benvenuti nel mio mondo di torte!</h1>
             <p className="col-md-8 fs-4">
-              Using a series of utilities, you can create this jumbotron, just
-              like the one in previous versions of Bootstrap. Check out the
-              examples below for how you can remix and restyle it to your liking.
+              Sono felice di condividere con voi la mia passione per la pasticceria e la cucina. In questo blog, troverete una vasta gamma di ricette di torte e dolci, dalle classiche alle innovative, con step-by-step e foto dettagliate per aiutarvi a preparare i vostri dessert preferiti.
+              Sono qui per aiutarvi a scoprire il mondo delle torte e a migliorare le vostre abilità di pasticcere. Condivido con voi le mie ricette, i miei consigli e le mie esperienze, in modo che possiate creare torte deliziose e uniche per voi e per i vostri cari.
+              Siete pronti a scoprire il segreto per creare torte che lasciano a bocca aperta? Allora entrate nel mio mondo di torte e iniziate a scoprire le ricette e le tecniche che vi aiuteranno a diventare un pasticcere esperto!
             </p>
             <button className="btn btn-primary btn" type="button" popovertarget='off-canvas-form'>
               <i className="bi bi-plus"></i> add
@@ -210,16 +211,19 @@ function App() {
         </div>
         <div className="container bg-warning">
           <div className='row row-cols-1 row-cols-ms-2 row-cols-lg-3 g-3'>
-            {post.data ? post.data.map((character, index) => (
+            {characters.data ? characters.data.map((character, index) => (
               <div className='col' key={index}>
-                <div className="card">
-                  <p>{character.title}</p>
+                <div className="card p-3 m-3">
+                  <h3 className='mb-3'>{character.title}</h3>
                   <p>{character.slug}</p>
                   <p>{character.content}</p>
                   <img src={api_server + character.image} alt={character.name} />
                   <p>{character.tags}</p>
-                  <button type='button' data-slug={character.slug} onClick={() => handleTrashpostClick(character.slug)}>Trash</button>
+                  <div className="d-grid gap-2 d-md-block">
+                    <button ttype="button" className="btn btn-danger" data-slug={character.slug} onClick={() => handleTrashpostClick(character.slug)}>Trash</button>
+                  </div>
                 </div>
+
               </div>
             )) :
               <p>No result yet</p>
