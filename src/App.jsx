@@ -18,6 +18,8 @@ function App() {
 
   const [formData, setFormData] = useState(initialFormData)
   const [post, setPost] = useState({})
+  console.log(post);
+
 
   function fetchData(url = 'http://localhost:3000/posts') {
     fetch(url)
@@ -68,24 +70,23 @@ function App() {
 
 
 
-  function handleTrashpostClick() {
+  function handleTrashpostClick(slug) {
+    console.log('Deleting post with slug:', slug);
 
-    fetch('http://localhost:3000/posts/slug', {
+    fetch(`http://localhost:3000/posts/${slug}`, {
       method: 'DELETE',
-      headers: {
-        'Content-type': 'application/json'
-      },
     })
       .then(res => res.json())
       .then((data) => {
         console.log('Post deleted', data);
+        const newPosts = post.filter(post => post.slug != slug)
+        console.log(newPosts);
+        setPost(newPosts)
         fetchData()
       })
 
 
-    const newPosts = post.filter(post => post.slug != slug)
-    console.log(newPosts);
-    setPost(newPosts)
+
   }
 
 
@@ -217,7 +218,7 @@ function App() {
                   <p>{character.content}</p>
                   <img src={api_server + character.image} alt={character.name} />
                   <p>{character.tags}</p>
-                  <button type='button' onClick={handleTrashpostClick}>Trash</button>
+                  <button type='button' data-slug={post.slug} onClick={() => handleTrashpostClick(post.slug)}>Trash</button>
                 </div>
               </div>
             )) :
