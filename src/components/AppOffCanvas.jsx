@@ -1,75 +1,21 @@
 import { useState, useEffect } from "react"
 
-const initialFormData = {
-    title: '',
-    slug: '',
-    content: '',
-    image: '',
-    tags: '',
-    avaible: ''
-}
-export default function AppOffCanvas() {
-
-    const [formData, setFormData] = useState(initialFormData)
-    const [characters, setCharacters] = useState({})
 
 
-    function fetchData(url = 'http://localhost:3000/posts') {
-        fetch(url)
-            .then(resp => resp.json())
-            .then(data => {
-                // console.log(data);
-                setCharacters(data)
-
-            })
-    }
-    useEffect(fetchData, [])
-
-
-    function addPost(e) {
-        e.preventDefault()
-        console.log('Form sent', formData);
-
-
-        const newPost = {
-            title: formData.title,
-            slug: formData.slug,
-            content: formData.content,
-            image: formData.image,
-            tags: formData.tags,
-            avaible: formData.avaible
-        }
-
-
-        fetch('http://localhost:3000/posts', {
-            method: 'POST',
-            headers: {
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify(newPost),
-        })
-            .then((res) => res.json())
-            .then(data => {
-                console.log('Post added', data);
-
-
-                setFormData(initialFormData)
-
-                fetchData()
+export default function AppOffCanvas({ formData, handleFormField, addPost }) {
 
 
 
-            })
-    }
 
 
-    function handleFormField(e) {
-        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
-        setFormData({
-            ...formData,
-            [e.target.name]: value
-        })
-    }
+
+
+
+
+
+
+
+
     return (
         <div id="off-canvas-form" popover='true' className='p-3'>
             <div className="d-flex justify-content-between align-items-center gap-5">
